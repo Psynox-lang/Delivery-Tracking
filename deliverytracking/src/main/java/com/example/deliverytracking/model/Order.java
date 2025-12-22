@@ -1,15 +1,15 @@
 package com.example.deliverytracking.model;
 
-public class Orders {
+public class Order {
     private Long id;
     private String customerName;
-    private String status;
+    private OrderStatus status;
 
-    public Orders() {
+    public Order() {
 
     }
 
-    public Orders(Long id, String customerName, String status) {
+    public Order(Long id, String customerName, OrderStatus status) {
         this.id = id;
         this.customerName = customerName;
         this.status = status;
@@ -31,11 +31,11 @@ public class Orders {
         this.customerName = customerName;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 
