@@ -2,6 +2,8 @@ package com.example.deliverytracking.service;
 
 import com.example.deliverytracking.model.Order;
 import com.example.deliverytracking.model.OrderStatus;
+import com.example.deliverytracking.exception.InvalidOrderStatusException;
+import com.example.deliverytracking.exception.OrderNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,12 +31,12 @@ public class OrderService {
         Order order = orders.stream()
                 .filter(o -> o.getId().equals(orderId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
 
         OrderStatus currentStatus = order.getStatus();
 
         if (!isValidTransition(currentStatus, newStatus)) {
-            throw new RuntimeException(
+            throw new InvalidOrderStatusException(
                     "Cannot change status from " + currentStatus + " to " + newStatus);
         }
 
