@@ -1,12 +1,20 @@
 package com.example.deliverytracking.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "orders")
 public class Order {
+
+    @Id
     private Long id;
+
     private String customerName;
+
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     public Order() {
-
     }
 
     public Order(Long id, String customerName, OrderStatus status) {
@@ -38,5 +46,4 @@ public class Order {
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
-
 }

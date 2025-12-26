@@ -1,36 +1,35 @@
 package com.example.deliverytracking.service;
 
-import com.example.deliverytracking.model.Order;
-import com.example.deliverytracking.model.OrderStatus;
 import com.example.deliverytracking.exception.InvalidOrderStatusException;
 import com.example.deliverytracking.exception.OrderNotFoundException;
+import com.example.deliverytracking.model.Order;
+import com.example.deliverytracking.model.OrderStatus;
+import com.example.deliverytracking.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class OrderService {
 
-    private final List<Order> orders = new ArrayList<>();
+    private final OrderRepository orderRepository;
 
-    // Create order
-    public Order createOrder(Order order) {
-        order.setStatus(OrderStatus.PLACED);
-        orders.add(order);
-        return order;
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
     }
 
-    // Get all orders
+    public Order createOrder(Order order) {
+        order.setStatus(OrderStatus.PLACED);
+        return orderRepository.save(order);
+    }
+
     public List<Order> getAllOrders() {
-        return orders;
+        return orderRepository.findAll();
     }
 
     public Order updateOrderStatus(Long orderId, OrderStatus newStatus) {
 
-        Order order = orders.stream()
-                .filter(o -> o.getId().equals(orderId))
-                .findFirst()
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
 
         OrderStatus currentStatus = order.getStatus();
@@ -41,10 +40,9 @@ public class OrderService {
         }
 
         order.setStatus(newStatus);
-        return order;
+        return orderRepository.save(order);
     }
 
-    // Business rule: allowed transitions
     private boolean isValidTransition(OrderStatus current, OrderStatus next) {
         return switch (current) {
             case PLACED -> next == OrderStatus.ACCEPTED;
